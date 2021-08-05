@@ -153,11 +153,11 @@ GROUP BY category;
 
 **Which id value has the most number of duplicate records in the health.user_logs table?*
 
-- Use `CTE` and generate a table with new column frequency to count number of duplicated rows. 
-- `SUM` frequency to find total number of duplicate records for each id regardless of the log_date and other measures.
+- Use `CTE` and generate table with new column, frequency to count number of rows. 
+- Filter frequency > 1 to generate only duplicated records, then `SUM` frequency to find total number of the duplicated records for each id regardless of the log_date and other measures.
 
 ````sql
-WITH groupby_counts AS (
+WITH grouped_cte AS (
   SELECT 
     id, 
     log_date, 
@@ -179,15 +179,15 @@ WITH groupby_counts AS (
 SELECT 
   id, 
   SUM(frequency) AS total_frequency
-FROM groupby_counts
-WHERE frequency > 1
+FROM grouped_cte
+WHERE frequency > 1 -- To return records that appear more than once only (eg, 2 or more duplicated rows)
 GROUP BY id
-ORDER BY total_frequency DESC;
+ORDER BY total_frequency DESC; -- To show highest duplicated rows
 ````
 
 **Which log_date value had the most duplicate records after removing the max duplicate id value from question 1?**
 
-- Questions asks for the 2nd highest duplicate value. 
+- Questions asks for log_date with highest duplicate values ***after*** filtering out id with highest duplicate rows. 
 - Taking the `CTE` from previous question, filter out the id with the most duplicate rows.
 
 ````sql
