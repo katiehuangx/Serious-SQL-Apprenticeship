@@ -138,7 +138,7 @@ FROM dvd_rentals.sales_by_film_category;
 
 - To calculate percentage, use `COUNT(DISTINCT )` to get number of distinct categories. 
 
-````
+````sql
 SELECT 
   category, 
   COUNT(DISTINCT fid) AS unique_fid,
