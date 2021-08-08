@@ -450,4 +450,24 @@ SELECT
 FROM blood_glucose_cte;
 ````
 
+## 📌 Distribution Functions
 
+### Cumulative Distributions Table
+
+````sql
+WITH weight_cte AS 
+(SELECT
+  measure_value, 
+  NTILE(100) OVER (ORDER BY measure_value) AS percentile
+FROM health.user_logs
+WHERE measure = 'weight')
+
+SELECT
+  percentile,
+  MIN(measure_value) AS floor_value,
+  MAX(measure_value) AS ceiling_value,
+  COUNT(*) AS percentile_count
+FROM weight_cte
+GROUP BY percentile
+ORDER BY percentile
+````
