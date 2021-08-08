@@ -571,7 +571,7 @@ ORDER BY percentile;
 
 **Histogram**
 
-To create Histogram, we have to put our values into buckets and find the counts for each bucket. 
+To create Histogram, we have to perform a **Frequency Distribution** whereby we put our values into buckets and get the frequency/counts for each bucket. 
 
 ````sql
 SELECT
