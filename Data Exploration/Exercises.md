@@ -472,7 +472,7 @@ GROUP BY percentile
 ORDER BY percentile
 ````
 
-Finding for Large Outliers,
+### Finding for Large Outliers
 ````sql
 WITH percentile_cte AS 
 (SELECT
@@ -493,7 +493,7 @@ ORDER BY measure_value DESC;
 <img width="942" alt="image" src="https://user-images.githubusercontent.com/81607668/128622564-3b2f8feb-5e19-48f0-b1fd-2f9777279cdf.png">
 
 
-Finding for Small Outliers,
+### Finding for Small Outliers
 ````sql
 WITH percentile_cte AS 
 (SELECT
@@ -531,5 +531,61 @@ ROW_NUMBER() orders each value depending on its position in the bucket, regardle
 RANK() ensures that duplicates have equal position, where the subsequent position after a set of duplicates is N + X (where X = number of duplicates). 
 
 DENSE_RANK() also ensures that duplicates have equal position, but the subsequent position after a set of duplicates is N + 1. 
+
+### Removing outliers
+
+First, create a temporary clean table with outliers removed. 
+
+````sql
+DROP TABLE IF EXISTS clean_weight_logs;
+
+CREATE TEMP TABLE clean_weight_logs AS (
+SELECT *
+FROM health.user_logs
+WHERE measure = 'weight' 
+  AND measure_value > 0
+  AND measure_value < 201);
+````
+
+### Cumulative Distribution Visualization
+
+````sql
+WITH clean_percentile_cte AS (
+SELECT
+  measure_value,
+  NTILE(100) OVER (ORDER BY measure_value) AS percentile
+FROM clean_weight_logs)
+
+SELECT
+  percentile,
+  MIN(measure_value) AS floor_value,
+  MAX(measure_value) AS ceiling_value,
+  COUNT(*) AS percentile_count
+FROM clean_percentile_cte
+GROUP BY percentile
+ORDER BY percentile;
+````
+
+**Line Plot**
+<img width="562" alt="image" src="https://user-images.githubusercontent.com/81607668/128623701-b27a83eb-8e9a-4081-b866-6a3ddd15cb3f.png">
+
+**Histogram**
+
+To create Histogram, we have to put our values into buckets and find the counts for each bucket. 
+
+````sql
+SELECT
+  WIDTH_BUCKET(measure_value, 0, 200, 50) AS bucket, -- Creating equally spaced buckets of 50
+  AVG(measure_value) AS avg_value,
+  COUNT(*) AS frequency
+FROM clean_weight_logs
+GROUP BY bucket
+ORDER BY bucket;
+````
+
+<img width="440" alt="image" src="https://user-images.githubusercontent.com/81607668/128623800-dc689fdd-2de3-4c89-9e55-75be3c4a941c.png">
+
+<img width="676" alt="image" src="https://user-images.githubusercontent.com/81607668/128623822-3a3f3a91-fd67-45ff-985a-79fa0312e59a.png">
+
 
 ***
