@@ -471,3 +471,65 @@ FROM weight_cte
 GROUP BY percentile
 ORDER BY percentile
 ````
+
+Finding for Large Outliers,
+````sql
+WITH percentile_cte AS 
+(SELECT
+  measure_value, 
+  NTILE(100) OVER (ORDER BY measure_value) AS percentile
+FROM health.user_logs
+WHERE measure = 'weight')
+
+SELECT
+  measure_value,
+  ROW_NUMBER() OVER (ORDER BY measure_value DESC) AS row_number_order,
+  RANK() OVER (ORDER BY measure_value DESC) AS rank_order,
+  DENSE_RANK() OVER (ORDER BY measure_value DESC) AS dense_rank_order
+FROM percentile_cte
+ORDER BY measure_value DESC;
+````
+
+<img width="942" alt="image" src="https://user-images.githubusercontent.com/81607668/128622564-3b2f8feb-5e19-48f0-b1fd-2f9777279cdf.png">
+
+
+Finding for Small Outliers,
+````sql
+WITH percentile_cte AS 
+(SELECT
+  measure_value, 
+  NTILE(100) OVER (ORDER BY measure_value) AS percentile
+FROM health.user_logs
+WHERE measure = 'weight')
+
+SELECT
+  measure_value,
+  ROW_NUMBER() OVER (ORDER BY measure_value) AS row_number_order,
+  RANK() OVER (ORDER BY measure_value) AS rank_order,
+  DENSE_RANK() OVER (ORDER BY measure_value) AS dense_rank_order
+FROM percentile_cte
+ORDER BY measure_value;
+ ````
+ 
+ <img width="950" alt="image" src="https://user-images.githubusercontent.com/81607668/128622852-42dd903e-b970-42b4-95a4-14a902813543.png">
+
+
+**What is the difference between ROW_NUMBER, RANK and DENSE_RANK window functions?**
+
+Let's use the Olympics game results as an example. There are 5 players and 2 players received the same 2nd best score. 
+
+| Player | Score | Result | ROW_NUMBER() | RANK() | DENSE_RANK() |
+| ------ | ----- | ------ | ------------ | ------ | ------------ |
+| A      | 96    | Gold  | 1             | 1      | 1            |
+| B      | 90    | Silver | 2            | 2      | 2            | 
+| C      | 90    | Silver | 3            | 2      | 2            | 
+| D      | 85    | Bronze | 4            | 4      | 3            | 
+| E      | 78    | N/A    | 5            | 5      | 4            | 
+
+ROW_NUMBER() orders each value depending on its position in the bucket, regardless of whether there are duplicates. Equation = N + 1.
+
+RANK() ensures that duplicates have equal position, where the subsequent position after a set of duplicates is N + X (where X = number of duplicates). 
+
+DENSE_RANK() also ensures that duplicates have equal position, but the subsequent position after a set of duplicates is N + 1. 
+
+***
