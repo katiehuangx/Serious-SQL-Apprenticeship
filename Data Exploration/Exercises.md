@@ -397,8 +397,57 @@ SELECT
   ROUND(AVG(measure_value),2) AS mean_value,
   ROUND(MODE() WITHIN GROUP (ORDER BY measure_value),2) as mode_value,
   CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY measure_value) AS NUMERIC) AS median_value,
-  ROUND(STDDEV(measure_value),2) AS stdev_value,
+  ROUND(STDDEV(measure_value),2) AS stddev_value,
   ROUND(VARIANCE(measure_value),2) AS variance_value
 FROM health.user_logs
 WHERE measure = 'weight';
 ````
+
+**What is the average, median and mode values of blood glucose values to 2 decimal places?**
+
+````sql
+SELECT
+  ROUND(AVG(measure_value), 2) AS average_value,
+  ROUND(CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY measure_value) AS NUMERIC),2) AS median_value,
+  ROUND(MODE() WITHIN GROUP (ORDER BY measure_value),2)AS mode_value
+FROM health.user_logs
+WHERE measure = 'blood_glucose';
+````
+
+**What is the most frequently occuring measure_value value for all blood glucose measurements?**
+
+````sql
+SELECT 
+  measure_value, 
+  COUNT(*) AS blood_glucose_count
+FROM health.user_logs
+WHERE measure = 'blood_glucose'
+GROUP BY measure_value
+ORDER BY blood_glucose_count DESC
+LIMIT 10;
+````
+
+**Calculate the 2 Pearson Coefficient of Skewness for blood glucose measures given the following formulas:**
+
+<img width="478" alt="image" src="https://user-images.githubusercontent.com/81607668/128620549-84f03d4f-a626-4548-8af1-f36f1fadfd8a.png">
+
+- The skewness terms are quantitative measure of how lopsided a certain distribution is.
+- To find out whether a specific table index has a “skew” in the values - leading to disproportionate allocation of data points to specific buckets or nodes.
+
+````sql
+WITH blood_glucose_cte AS
+(SELECT 
+  ROUND(AVG(measure_value),2) AS mean_value,
+  ROUND(MODE() WITHIN GROUP (ORDER BY measure_value),2) AS mode_value,
+  CAST(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY measure_value) AS NUMERIC) AS median_value,
+  ROUND(STDDEV(measure_value),2) AS stddev_value
+FROM health.user_logs
+WHERE measure = 'blood_glucose')
+
+SELECT 
+  ROUND((mean_value - mode_value) / stddev_value,2) AS pearson_corr_1,
+  ROUND(3 * (mean_value - median_value) / stddev_value,2) AS pearson_corr_2
+FROM blood_glucose_cte;
+````
+
+
