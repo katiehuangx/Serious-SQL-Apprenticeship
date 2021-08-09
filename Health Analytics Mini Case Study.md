@@ -15,6 +15,8 @@ FROM health.user_logs
 
 There are 554 unique users in the dataset.
 
+***
+
 ### To answer Q2 to Q8, we will create a temporary table.
 
 ````sql
@@ -33,6 +35,8 @@ GROUP BY id);
 
 Alright, once we have created the temp table, let's move on to our questions.
 
+***
+
 ### 2. How many total measurements do we have per user on average?
 
 Question is asking for the **average number of measurements for all users**.
@@ -49,6 +53,8 @@ FROM user_measure_count;
 
 The average measurements per user is 79 measurements. 
 
+***
+
 ### 3. What about the median number of measurements per user?
 
 ````sql
@@ -61,6 +67,8 @@ FROM user_measure_count;
 <img width="134" alt="image" src="https://user-images.githubusercontent.com/81607668/128625985-18f389cd-a56e-4c2a-b37b-2db2e9bebe17.png">
 
 The median measurement per user is 2. 
+
+***
 
 ### 4. How many users have 3 or more measurements?
 
@@ -76,6 +84,8 @@ WHERE measure_count >= 3
 
 209 users have 3 or more measurements.
 
+***
+
 ### 5. How many users have 1,000 or more measurements?
 
 ````sql
@@ -90,6 +100,7 @@ WHERE measure_count >= 1000
 
 There are 5 users with 1,000 or more measurements.
 
+***
 ### Looking at the logs data -
 ### 6. What is the number and percentage of the active user base who have logged blood glucose measurements?
 
@@ -106,7 +117,7 @@ GROUP BY measure;
 <img width="750" alt="image" src="https://user-images.githubusercontent.com/81607668/128626812-8358e599-6025-41ca-81ea-31679997a922.png">
 
 There are 325 users or 40% of user base who have logged blood glucose measurements.
-
+***
 ### 7. What is the number and percentage of the active user base who have at least 2 types of measurements?
 
 ````sql
@@ -128,7 +139,7 @@ LEFT JOIN measure_more_than_2 AS m
 <img width="408" alt="image" src="https://user-images.githubusercontent.com/81607668/128654285-e53c7e3a-66f0-4ff9-909e-ff7cff68edc5.png">
 
 Out of 554 active users, 204 users have at least 2 types of measurements making up 37% of total active user base.
-
+***
 ### 8. What is the number and percentage of the active user base who have all 3 measures - blood glucose, weight and blood pressure?
 
 ````sql
@@ -149,7 +160,7 @@ LEFT JOIN all_measures AS m -- Use left join to get results with all records in 
 <img width="418" alt="image" src="https://user-images.githubusercontent.com/81607668/128654632-08fbf6c4-6321-46e9-83d5-912b15670047.png">
 
 Out of 554 active users, 50 users have taken all 3 measures making up 9% of total active user base.
-
+***
 ### 9. For users that have blood pressure measurements, what is the median systolic/diastolic blood pressure values?
 
 - First, we filter results to users with blood pressure measurements.
