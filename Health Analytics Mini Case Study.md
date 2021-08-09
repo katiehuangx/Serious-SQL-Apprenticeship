@@ -128,7 +128,7 @@ WHERE unique_measure_count >= 2)
 
 SELECT
   COUNT(DISTINCT m.id) AS unique_user,
-  ROUND(COUNT(DISTINCT m.id)::numeric / COUNT(DISTINCT u.id),2) AS unique_user_percentage
+  ROUND(100 * COUNT(DISTINCT m.id)::numeric / COUNT(DISTINCT u.id),2) AS unique_user_percentage
 FROM user_measure_count AS u
 LEFT JOIN measure_more_than_2 AS m
   ON u.id = m.id;
@@ -136,28 +136,31 @@ LEFT JOIN measure_more_than_2 AS m
 
 **Answer:**
 
-<img width="408" alt="image" src="https://user-images.githubusercontent.com/81607668/128654285-e53c7e3a-66f0-4ff9-909e-ff7cff68edc5.png">
+<img width="423" alt="image" src="https://user-images.githubusercontent.com/81607668/128656551-59b2ef0e-e35b-477f-9fa3-4ff4424e6d2e.png">
 
 Out of 554 active users, 204 users have at least 2 types of measurements making up 37% of total active user base.
 ***
 ### 8. What is the number and percentage of the active user base who have all 3 measures - blood glucose, weight and blood pressure?
 
+- First thing we will do is to create a `CTE` with results filtered to users with all measures.
+- Then, we perform a `LEFT JOIN` on the user_measure_count and all_measures `CTE` meaning, we will retrieve all records in user_measure_count and inner join with all_measures `CTE`. 
+
 ````sql
 WITH all_measures AS (
 SELECT *
 FROM user_measure_count
-WHERE unique_measure_count = 3) -- Filter results with users with all 3 measures
+WHERE unique_measure_count = 3)
 
 SELECT
   COUNT(DISTINCT m.id) AS unique_user,
   ROUND(COUNT(DISTINCT m.id)::numeric / COUNT(DISTINCT u.id),2) AS unique_user_percentage
 FROM user_measure_count AS u
-LEFT JOIN all_measures AS m -- Use left join to get results with all records in user_measure_count table and intersect with all_measures `CTE`
+LEFT JOIN all_measures AS m
   ON u.id = m.id;
 ````
 **Answer:**
 
-<img width="418" alt="image" src="https://user-images.githubusercontent.com/81607668/128654632-08fbf6c4-6321-46e9-83d5-912b15670047.png">
+<img width="434" alt="image" src="https://user-images.githubusercontent.com/81607668/128656575-ac81483f-2716-4820-8cf2-8acd35053278.png">
 
 Out of 554 active users, 50 users have taken all 3 measures making up 9% of total active user base.
 ***
