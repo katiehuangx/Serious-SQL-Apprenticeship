@@ -143,7 +143,7 @@ Out of 554 active users, 204 users have at least 2 types of measurements making 
 ### 8. What is the number and percentage of the active user base who have all 3 measures - blood glucose, weight and blood pressure?
 
 - First thing we will do is to create a `CTE` with results filtered to users with all measures.
-- Then, we perform a `LEFT JOIN` on the user_measure_count and all_measures `CTE` meaning, we will retrieve all records in user_measure_count and inner join with all_measures `CTE`. 
+- Then, we perform a `LEFT JOIN` on the user_measure_count and all_measures `CTE` meaning, we will retrieve all records in user_measure_count and matching records from all_measures `CTE`. 
 
 ````sql
 WITH all_measures AS (
