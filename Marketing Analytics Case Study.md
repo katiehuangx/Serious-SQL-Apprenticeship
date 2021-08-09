@@ -1,6 +1,6 @@
-# Marketing Analytics Case Study
+# 🎬 Marketing Analytics Case Study
 
-## Learning Outcomes
+## ✅ Learning Outcomes
 
 <details>
 <summary>
@@ -44,11 +44,27 @@ The following SQL skills and concepts will be covered in this section of the Ser
 - Converting text columns to title case
 - Combining multiple text and numeric data type columns into a single text expression
 
-</details>  
+</details>
+  
+***
+
+## 📌 Introduction and Overview
+
+***
+
+## 📌 Understanding the Data
+  
+<img width="773" alt="image" src="https://user-images.githubusercontent.com/81607668/128663547-9b73770f-7505-47f0-a62f-9d44375504a5.png">
+
+***
+
+## 📌 SQL Reverse Engineering
 
 ***
 
 ## 📌 Solution 
+  
+ 
 
 
 
