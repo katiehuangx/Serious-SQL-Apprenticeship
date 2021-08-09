@@ -174,6 +174,11 @@ SELECT
 FROM health.user_logs
 WHERE measure = 'blood_pressure';
 ````
+**Answer:**
+
+<img width="721" alt="image" src="https://user-images.githubusercontent.com/81607668/128656051-4743b034-0170-40ee-9c1a-38025652c55e.png">
+
+The median for systolic and diastolic are 126 and 79.
 
 ***
 
