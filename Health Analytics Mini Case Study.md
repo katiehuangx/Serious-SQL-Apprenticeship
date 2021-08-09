@@ -165,7 +165,7 @@ Out of 554 active users, 50 users have taken all 3 measures making up 9% of tota
 
 - First, we filter results to users with blood pressure measurements.
 - Then, we find the median of systolic and diastolic measurements.
-- 
+
 ````sql
 SELECT
   'blood_pressure' AS measure_name,
