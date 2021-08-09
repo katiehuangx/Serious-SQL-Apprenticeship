@@ -13,7 +13,9 @@ FROM health.user_logs
 
 <img width="141" alt="image" src="https://user-images.githubusercontent.com/81607668/128624690-edfb1c8e-2a46-4bd9-a699-d2e678d42664.png">
 
-### To answer Q2 to Q8, we create a temporary table.
+There are 554 unique users in the dataset.
+
+### To answer Q2 to Q8, we will create a temporary table.
 
 ````sql
 DROP TABLE IF EXISTS user_measure_count;
@@ -26,13 +28,14 @@ SELECT
 FROM health.user_logs
 GROUP BY id);
 ````
-**Answer:**
 
 <img width="801" alt="image" src="https://user-images.githubusercontent.com/81607668/128625477-926f9d69-f307-4e6a-bdd6-40d026338fed.png">
 
+Alright, once we have created the temp table, let's move on to our questions.
+
 ### 2. How many total measurements do we have per user on average?
 
-Question asks to find for the **average number of measurements for all users**.
+Question is asking for the **average number of measurements for all users**.
 
 ````sql
 SELECT 
@@ -44,6 +47,8 @@ FROM user_measure_count;
 
 <img width="161" alt="image" src="https://user-images.githubusercontent.com/81607668/128625883-1fd5191b-0347-4d16-87f6-a26f50e75b5d.png">
 
+The average measurements per user is 79 measurements. 
+
 ### 3. What about the median number of measurements per user?
 
 ````sql
@@ -54,6 +59,8 @@ FROM user_measure_count;
 **Answer:**
 
 <img width="134" alt="image" src="https://user-images.githubusercontent.com/81607668/128625985-18f389cd-a56e-4c2a-b37b-2db2e9bebe17.png">
+
+The median measurement per user is 2. 
 
 ### 4. How many users have 3 or more measurements?
 
@@ -67,6 +74,7 @@ WHERE measure_count >= 3
 
 <img width="105" alt="image" src="https://user-images.githubusercontent.com/81607668/128626070-33506b6c-83e6-43f8-a04e-98feac608d96.png">
 
+209 users have 3 or more measurements.
 
 ### 5. How many users have 1,000 or more measurements?
 
@@ -80,6 +88,7 @@ WHERE measure_count >= 1000
 
 <img width="98" alt="image" src="https://user-images.githubusercontent.com/81607668/128626077-b7dfae74-b93c-4cc5-b8ba-581d7edf4f19.png">
 
+There are 5 users with 1,000 or more measurements.
 
 ### Looking at the logs data -
 ### 6. What is the number and percentage of the active user base who have logged blood glucose measurements?
@@ -96,6 +105,7 @@ GROUP BY measure;
 
 <img width="750" alt="image" src="https://user-images.githubusercontent.com/81607668/128626812-8358e599-6025-41ca-81ea-31679997a922.png">
 
+There are 325 users or 40% of user base who have logged blood glucose measurements.
 
 ### 7. What is the number and percentage of the active user base who have at least 2 types of measurements?
 
@@ -153,4 +163,6 @@ SELECT
 FROM health.user_logs
 WHERE measure = 'blood_pressure';
 ````
+
+***
 
