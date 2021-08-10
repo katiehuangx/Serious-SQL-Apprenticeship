@@ -63,8 +63,6 @@ The following SQL skills and concepts will be covered in this section of the Ser
 ***
 
 ## 📌 Solution 
-  
- <img width="342" alt="image" src="https://user-images.githubusercontent.com/81607668/128840657-10d9b886-1c0d-436e-9d36-7378ec014f4f.png">
 
 <img width="314" alt="image" src="https://user-images.githubusercontent.com/81607668/128841144-4947e723-0421-41e0-98e4-96eacc8548ac.png">
 
