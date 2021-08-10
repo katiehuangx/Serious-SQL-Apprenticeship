@@ -48,7 +48,7 @@ The following SQL skills and concepts will be covered in this section of the Ser
   
 ***
 
-## 📌 Introduction and Overview
+## 📌 Introduction
 
 ***
 
