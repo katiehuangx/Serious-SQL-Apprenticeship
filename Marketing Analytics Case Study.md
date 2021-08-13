@@ -64,7 +64,7 @@ The following SQL skills and concepts will be covered in this section of the Ser
 
 ## 📌 Solution 
 
-<img width="314" alt="image" src="https://user-images.githubusercontent.com/81607668/128841144-4947e723-0421-41e0-98e4-96eacc8548ac.png">
+
 
 
 
