@@ -14,12 +14,11 @@ The Marketing team have shared with us a draft of the email they wish to send to
 
 We have summarized the data points to 7 parts.
 
-Email Parts | Data Points | What information do we need to find? |
------------ | ----------- | ------------------------------------ |
-1 & 4       | Top 2 Categories | For each customer, identify top 2 categories for each customer based off their past rental history. |
-3 & 6       | Category Film recommendations | Identify 3 most popular films for each customer's top 2 categories. We cannot recommend any film which the customer has viewed |
-1 & 4       | Top 2 Categories | For each customer, identify top 2 categories for each customer based off their past rental history. |
-
+Data Points | Email Item | What information do we need to find? | Criterias |
+----------- | ----------- | ------------------------------------ | -------------- |
+1 & 4       | Top 2 Categories | Identify top 2 categories for each customer based off their past rental history. | - |
+2 & 5       | Individual Customer Insights | For each customer, identify top 2 categories for each customer based off their past rental history. |
+3 & 6       | Category Film Recommendations | Identify 3 most popular films for each customer's top 2 categories. | Cannot recommend any film which the customer has viewed. If customer does not have any film recommendations for either category - flag out to Marketing team to exclude from campaign! |
 ***
 
 ## 📌 2.0 Understanding the Data
