@@ -1,10 +1,29 @@
 # 🎬 Marketing Analytics Case Study
 
-## 📌 1.0 Introduction
+## 📌 1.0 Overview
+
+### Business Task
+
+We (Leadership team) have been asked to support the Customer Analytics team at DVD Rental Co who have been tasked with **generating the necessary data points** required to populate specific parts of this first-ever **customer email campaign**.
+
+### Business Deliverables
+
+The Marketing team have shared with us a draft of the email they wish to send to their customers.
+
+<img width="573" alt="image" src="https://user-images.githubusercontent.com/81607668/129348831-c64205f9-46f4-4182-83eb-0cbd12ba7e61.png">
+
+We have summarized the data points to 7 parts.
+
+Email Parts | Data Points | What information do we need to find? |
+----------- | ----------- | ------------------------------------ |
+1 & 4       | Top 2 Categories | For each customer, identify top 2 categories for each customer based off their past rental history. |
+3 & 6       | Category Film recommendations | Identify 3 most popular films for each customer's top 2 categories. We cannot recommend any film which the customer has viewed |
+1 & 4       | Top 2 Categories | For each customer, identify top 2 categories for each customer based off their past rental history. |
 
 ***
 
 ## 📌 2.0 Understanding the Data
+  
   
 <img width="773" alt="image" src="https://user-images.githubusercontent.com/81607668/128663547-9b73770f-7505-47f0-a62f-9d44375504a5.png">
 
@@ -12,13 +31,14 @@
 
 ## 📌 3.0 Data Exploration
 
-Before we dive into problem-solving, let's explore the data! We will develop a few hypotheses and test them using SQL.
+Before we dive into problem-solving, let's explore the data!
 
 ### 3.1 Validating Data with Hypotheses
 
 We will develop a few hypotheses and test them using SQL.
 
-### 3.1.1 Hypothesis 1
+#### 3.1.1 Hypothesis 1
+
 > The number of unique `inventory_id` records will be equal in both `dvd_rentals.rentals` and `dvd_rentals.inventory` tables.
 
 ````sql
@@ -38,7 +58,8 @@ FROM dvd_rentals.inventory;
 
 Looks like there are 4,580 `inventory_id` records in `dvd_rentals.rentals` and 4,581 `inventory_id` records in `dvd_rentals.inventory`. There is an additional 1 `inventory_id` record in `dvd_rentals.inventory`. 
 
-### 3.1.2 Hypothesis 2
+#### 3.1.2 Hypothesis 2
+
 > There will be a multiple records per unique `inventory_id` in the `dvd_rentals.rental` table.
 
 ````sql
@@ -69,7 +90,7 @@ Ok, `inventory_id_count` represents the number of inventory records for each fil
 
 For example, in 1st row, there is 1 inventory_id/ film that has 4 copies of inventory/film.
 
-### 3.1.3 Hypothesis 3
+#### 3.1.3 Hypothesis 3
 > There will be multiple `inventory_id` records per unique `film_id` value in the `dvd_rentals.inventory` table
 
 ````sql
@@ -98,7 +119,7 @@ ORDER BY inventory_records_count;
 
 ### 3.2 Foreign Key Overlap Analysis
 
-### 3.2.1 Rental and Inventory Table
+#### 3.2.1 Rental and Inventory Table
 Let's revisit the following findings,
 
 > "Looks like there are 4,580 `inventory_id` records in `dvd_rentals.rentals` and 4,581 `inventory_id` records in `dvd_rentals.inventory`. There is an additional 1 `inventory_id` record in `dvd_rentals.inventory`."
@@ -135,11 +156,65 @@ We can make our assumption that this specific film is never rented by any custom
 
 ### 3.2.2 Inventory and Film Tables
 
+Now, we will find out the relationship between `inventory` and `film` tables.
 
+````sql
+-- Find the number of unique film_id
+SELECT 
+  COUNT(DISTINCT film_id)
+FROM dvd_rentals.film
+````
 
+<img width="95" alt="image" src="https://user-images.githubusercontent.com/81607668/129337376-ebd83b0a-8547-4367-a18f-e4812c3d80ab.png">
 
+There are 1,000 unique `film_id` records in `film` table.
+
+````sql
+-- Running ANTI JOIN to find out matching film_id records in both tables
+SELECT 
+  COUNT(*)
+FROM dvd_rentals.film f
+WHERE EXISTS
+  (SELECT film_id
+  FROM dvd_rentals.inventory i
+  WHERE f.film_id = i.film_id)
+````
+
+<img width="90" alt="image" src="https://user-images.githubusercontent.com/81607668/129337336-7b708918-4e00-42c9-a6d9-4d17a86d9178.png">
+
+We will expect 958 records when we perform INNER JOIN between both tables.
 
 ***
+
+## 4.0 Joining Tables
+
+````sql
+DROP TABLE IF EXISTS joint_table;
+
+CREATE TEMP TABLE joint_table AS
+SELECT
+  r.customer_id,
+  i.film_id,
+  f.title, 
+  fc.category_id,
+  c.name AS category_name
+FROM dvd_rentals.rental AS r
+JOIN dvd_rentals.inventory AS i
+  ON r.inventory_id = i.inventory_id
+JOIN dvd_rentals.film AS f
+  ON i.film_id = f.film_id
+JOIN dvd_rentals.film_category AS fc
+  ON f.film_id = fc.film_id
+JOIN dvd_rentals.category AS c
+  ON fc.category_id = c.category_id;
+
+SELECT *
+FROM joint_table
+LIMIT 5;
+````
+
+<img width="712" alt="image" src="https://user-images.githubusercontent.com/81607668/129341837-4a4195bf-b3d2-42fe-badf-151eb8d7fa03.png">
+
 
 ## 📌 Solution 
 
