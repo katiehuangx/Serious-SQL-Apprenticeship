@@ -1,10 +1,98 @@
 # 🎬 Marketing Analytics Case Study
 
+## 📌 Introduction
+
+***
+
+## 📌 Understanding the Data
+  
+<img width="773" alt="image" src="https://user-images.githubusercontent.com/81607668/128663547-9b73770f-7505-47f0-a62f-9d44375504a5.png">
+
+***
+
+## 📌 Data Exploration
+
+Before we dive into problem-solving, let's explore the data! We will develop a few hypotheses and test them using SQL.
+
+**Hypothesis 1**
+> The number of unique `inventory_id` records will be equal in both `dvd_rentals.rentals` and `dvd_rentals.inventory` tables.
+
+SELECT 
+  COUNT(DISTINCT inventory_id) -- As there are multiple inventory_id for each film_id, run DISTINCT to find unique inventory_id
+FROM dvd_rentals.rental
+
+<img width="138" alt="image" src="https://user-images.githubusercontent.com/81607668/129321232-9aef17ed-3abc-4f7c-a650-16b7744b059d.png">
+
+SELECT 
+  COUNT(inventory_id)
+FROM dvd_rentals.inventory;
+
+<img width="103" alt="image" src="https://user-images.githubusercontent.com/81607668/129321177-34d7d75d-3881-45be-822c-28ca7e05d8b0.png">
+
+Looks like there are 4,580 `inventory_id` records in `dvd_rentals.rentals` and 4,581 `inventory_id` records in `dvd_rentals.inventory`. There seems to be an additional 1 record `inventory_id` record in `dvd_rentals.inventory`. 
+
+**Hypothesis 2**
+> There will be a multiple records per unique `inventory_id` in the `dvd_rentals.rental` table.
+
+
+WITH inventory_cte AS ( -- Generate a CTE using GROUP BY count of inventory_id
+SELECT 
+  inventory_id, 
+  COUNT(*) AS inventory_id_count
+FROM dvd_rentals.rental
+GROUP BY inventory_id)
+
+<img width="327" alt="image" src="https://user-images.githubusercontent.com/81607668/129326477-d136a198-2f04-4bf9-8dbb-78f201f7c7e9.png">
+
+The table above shows the number of inventory records for each unique `inventory_id`. Then, we create a `CTE` and perform another grouping below.
+
+SELECT 
+  inventory_id_count,
+  COUNT(*) AS inventory_id_grouping
+FROM inventory_cte
+GROUP BY inventory_id_count
+ORDER BY inventory_id_count;
+
+<img width="521" alt="image" src="https://user-images.githubusercontent.com/81607668/129326263-74b31410-9517-4a40-8847-5ef572d38ac9.png">
+
+Ok, `inventory_id_count` represents the number of inventory records for each film and `inventory_id_grouping` is `inventory_id_count` grouped by the number of records.
+
+For example, in 1st row, there is 1 inventory_id/ film that has 4 copies of inventory/film.
+
+**Hypothesis 3**
+> There will be multiple `inventory_id` records per unique `film_id` value in the `dvd_rentals.inventory` table
+
+WITH inventory_grouped AS (
+SELECT 
+  DISTINCT(film_id) AS unique_film_id, 
+  COUNT(*) AS inventory_count
+FROM dvd_rentals.inventory
+GROUP BY film_id)
+
+<img width="291" alt="image" src="https://user-images.githubusercontent.com/81607668/129327670-a840f098-45fd-4851-a1ec-5d00d4336e0a.png">
+
+SELECT 
+  inventory_count, 
+  COUNT(*) AS 
+FROM inventory_grouped
+GROUP BY inventory_count
+ORDER BY inventory_count;
+
+<img width="224" alt="image" src="https://user-images.githubusercontent.com/81607668/129328276-ae08e35e-c355-4db7-ad0f-3c3ee6d48f96.png">
+
+There are 2 inventory_id 
+
+***
+
+## 📌 Solution 
+
+***
+
 ## ✅ Learning Outcomes
 
 <details>
 <summary>
-Click to view the awesome learning outcomes!
+Click to view my learning outcomes!
   
 </summary>
   
@@ -47,46 +135,3 @@ The following SQL skills and concepts will be covered in this section of the Ser
 </details>
   
 ***
-
-## 📌 Introduction
-
-***
-
-## 📌 Understanding the Data
-  
-<img width="773" alt="image" src="https://user-images.githubusercontent.com/81607668/128663547-9b73770f-7505-47f0-a62f-9d44375504a5.png">
-
-***
-
-## 📌 SQL Reverse Engineering
-
-***
-
-## 📌 Solution 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
