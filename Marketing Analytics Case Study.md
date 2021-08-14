@@ -197,7 +197,8 @@ SELECT
   i.film_id,
   f.title, 
   fc.category_id,
-  c.name AS category_name
+  c.name AS category_name,
+  r.rental_date
 FROM dvd_rentals.rental AS r
 JOIN dvd_rentals.inventory AS i
   ON r.inventory_id = i.inventory_id
@@ -213,7 +214,7 @@ FROM joint_table
 LIMIT 5;
 ````
 
-<img width="712" alt="image" src="https://user-images.githubusercontent.com/81607668/129341837-4a4195bf-b3d2-42fe-badf-151eb8d7fa03.png">
+<img width="936" alt="image" src="https://user-images.githubusercontent.com/81607668/129433454-28397824-4b5c-4872-a397-26deee8ae660.png">
 
 
 ## 📌 Solution 
