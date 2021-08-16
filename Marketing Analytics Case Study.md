@@ -188,6 +188,7 @@ We will expect 958 records when we perform INNER JOIN between both tables.
 
 ## 4.0 Joining Tables
 
+### joint_table table
 ````sql
 DROP TABLE IF EXISTS joint_table;
 
@@ -208,18 +209,126 @@ JOIN dvd_rentals.film_category AS fc
   ON f.film_id = fc.film_id
 JOIN dvd_rentals.category AS c
   ON fc.category_id = c.category_id;
-
+  
 SELECT *
-FROM joint_table
+FROM joint_table 
+WHERE customer_id = 1
+ORDER BY rental_date DESC
 LIMIT 5;
 ````
 
-<img width="936" alt="image" src="https://user-images.githubusercontent.com/81607668/129433454-28397824-4b5c-4872-a397-26deee8ae660.png">
+<img width="983" alt="image" src="https://user-images.githubusercontent.com/81607668/129502098-f8e1a1bb-8468-46fd-8225-0c5ace3420d2.png">
 
+### category_rental_counts table
 
-## 📌 Solution 
+````sql
+DROP TABLE IF EXISTS category_rental_counts;
 
-***
+CREATE TEMP TABLE category_rental_counts AS
+SELECT 
+  customer_id, 
+  category_name, 
+  COUNT(*) AS rental_count, 
+  MAX(rental_date) AS latest_rental_date
+FROM joint_table
+GROUP BY customer_id, category_name;
+
+SELECT *
+FROM category_rental_counts 
+WHERE customer_id = 1
+ORDER BY rental_count DESC
+LIMIT 5;
+````
+
+<img width="657" alt="image" src="https://user-images.githubusercontent.com/81607668/129508402-0af2edd7-8fd3-4d18-9104-01663a256522.png">
+
+### customer_total_rentals table
+
+category_percentage: What proportion of each customer’s total films watched does this count make?
+
+````sql
+DROP TABLE IF EXISTS customer_total_rentals;
+CREATE TEMP TABLE customer_total_rentals AS
+SELECT
+  customer_id,
+  SUM(rental_count) AS total_rental_count
+FROM category_rental_counts
+GROUP BY customer_id;
+
+SELECT *
+FROM customer_total_rentals
+LIMIT 5;
+````
+
+<img width="326" alt="image" src="https://user-images.githubusercontent.com/81607668/129508445-6614026f-a16f-4751-962d-0696f8b0f101.png">
+
+###  average_category_rental_counts table
+
+````sql
+DROP TABLE IF EXISTS average_category_rental_counts;
+CREATE TEMP TABLE average_category_rental_counts AS
+SELECT
+  CONCAT_WS(' ', category_name, 'Category') AS category_name,
+  FLOOR(AVG(rental_count)) AS avg_rental_count
+FROM category_rental_counts
+GROUP BY category_name;
+
+SELECT *
+FROM average_category_rental_counts
+LIMIT 5;
+
+````
+
+<img width="349" alt="image" src="https://user-images.githubusercontent.com/81607668/129508502-c6ee304e-1007-4c40-8bca-7700beb15d7b.png">
+
+###  customer_category_percentiles table
+
+percentile: How does the customer rank in terms of the top X% compared to all other customers in this film category?
+
+````sql
+DROP TABLE IF EXISTS customer_category_percentiles;
+
+CREATE TEMP TABLE customer_category_percentiles AS (
+SELECT 
+  customer_id, 
+  category_name,
+  CEILING(100 * 
+    PERCENT_RANK() OVER (PARTITION BY category_name ORDER BY rental_count DESC)) as percentile
+FROM category_rental_counts);
+
+SELECT *
+FROM customer_category_percentiles
+WHERE customer_id = 1
+ORDER BY percentile
+LIMIT 5;
+````
+
+<img width="443" alt="image" src="https://user-images.githubusercontent.com/81607668/129508552-8e00e9b3-a641-4371-abb8-5f3878d5f744.png">
+
+## Joining All Temporary Tables
+
+````sql
+DROP TABLE IF EXISTS customer_category_joint_table;
+CREATE TEMP TABLE customer_category_joint_table AS
+SELECT
+  t1.customer_id,
+  t1.category_name,
+  t1.rental_count,
+  t2.total_rental_count,
+  t3.avg_rental_count,
+  t4.percentile
+FROM category_rental_counts AS t1
+JOIN customer_total_rentals AS t2
+  ON t1.customer_id = t2.customer_id
+JOIN average_category_rental_counts AS t3
+  ON t1.category_name = t3.category_name
+JOIN customer_category_percentiles AS t4
+  ON t1.customer_id = t4.customer_id
+  AND t1.category_name = t4.category_name;
+````
+
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/81607668/129506774-e1627ac5-6dd8-4b97-a92b-0f82281ef983.png">
+
 
 ## ✅ Learning Outcomes
 
