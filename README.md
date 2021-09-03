@@ -2,7 +2,7 @@
 
 <img width="573" alt="image" src="https://user-images.githubusercontent.com/81607668/128655887-038f2b02-0e9d-44b0-b632-594134bf3d56.png">
 
-Serious SQL is a Data With Danny Virtual Data Apprenticeship Program. Danny is also the creator of **#8WeekSQLChallenge**.
+Serious SQL is one of the courses in Data With Danny Virtual Data Apprenticeship Program. 
 
 View the course [here](https://www.datawithdanny.com/courses/serious-sql).
 
